@@ -1,0 +1,63 @@
+15:05:15 **** Build of configuration Debug for project SentryGun Driver ****
+make -j4 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'line_append':
+../Core/Src/main.c:76:75: warning: comparison between pointer and integer
+   76 |     if ((line_buffer[i] >= '0' && line_buffer[i] <= '9' && line_buffer[0] == "X") || (line_buffer[i] == '-' && line_buffer[0] == "X")) {
+      |                                                                           ^~
+../Core/Src/main.c:76:75: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../Core/Src/main.c:76:127: warning: comparison between pointer and integer
+   76 |     if ((line_buffer[i] >= '0' && line_buffer[i] <= '9' && line_buffer[0] == "X") || (line_buffer[i] == '-' && line_buffer[0] == "X")) {
+      |                                                                                                                               ^~
+../Core/Src/main.c:76:127: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../Core/Src/main.c:77:23: warning: passing argument 1 of 'scanf' makes pointer from integer without a cast [-Wint-conversion]
+   77 |      scanf(line_buffer[i], "%d", &shift_of_the_x_axis);
+      |            ~~~~~~~~~~~^~~
+      |                       |
+      |                       char
+In file included from ../Core/Src/main.c:27:
+e:\st\stm32cubeide_1.8.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.win32_2.0.0.202105311346\tools\arm-none-eabi\include\stdio.h:202:12: note: expected 'const char * restrict' but argument is of type 'char'
+  202 | int scanf (const char *__restrict, ...)
+      |            ^
+../Core/Src/main.c:78:82: warning: comparison between pointer and integer
+   78 |     } else if ((line_buffer[i] >= '0' && line_buffer[i] <= '9' && line_buffer[0] == "Y") ||( line_buffer[i] == '-' && line_buffer[0] == "Y")) {
+      |                                                                                  ^~
+../Core/Src/main.c:78:82: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../Core/Src/main.c:78:134: warning: comparison between pointer and integer
+   78 |     } else if ((line_buffer[i] >= '0' && line_buffer[i] <= '9' && line_buffer[0] == "Y") ||( line_buffer[i] == '-' && line_buffer[0] == "Y")) {
+      |                                                                                                                                      ^~
+../Core/Src/main.c:78:134: warning: comparison with string literal results in unspecified behavior [-Waddress]
+../Core/Src/main.c:79:23: warning: passing argument 1 of 'scanf' makes pointer from integer without a cast [-Wint-conversion]
+   79 |      scanf(line_buffer[i], "%d", &shift_of_the_y_axis);
+      |            ~~~~~~~~~~~^~~
+      |                       |
+      |                       char
+In file included from ../Core/Src/main.c:27:
+e:\st\stm32cubeide_1.8.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.9-2020-q2-update.win32_2.0.0.202105311346\tools\arm-none-eabi\include\stdio.h:202:12: note: expected 'const char * restrict' but argument is of type 'char'
+  202 | int scanf (const char *__restrict, ...)
+      |            ^
+../Core/Src/main.c:108:6: warning: 'main' is normally a non-static function [-Wmain]
+  108 |  int main(void) {
+      |      ^~~~
+../Core/Src/main.c:209:2: error: expected declaration or statement at end of input
+  209 |  }
+      |  ^
+../Core/Src/main.c:228: warning: control reaches end of non-void function [-Wreturn-type]
+At top level:
+../Core/Src/main.c:202:7: warning: 'Error_Handler' defined but not used [-Wunused-function]
+  202 |  void Error_Handler(void) {
+      |       ^~~~~~~~~~~~~
+../Core/Src/main.c:156:7: warning: 'SystemClock_Config' defined but not used [-Wunused-function]
+  156 |  void SystemClock_Config(void) {
+      |       ^~~~~~~~~~~~~~~~~~
+../Core/Src/main.c:108:6: warning: 'main' defined but not used [-Wunused-function]
+  108 |  int main(void) {
+      |      ^~~~
+../Core/Src/main.c:134:8: warning: 'HAL_UART_RxCpltCallback' defined but not used [-Wunused-function]
+  134 |   void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+      |        ^~~~~~~~~~~~~~~~~~~~~~~
+make: *** [Core/Src/subdir.mk:40: Core/Src/main.o] Error 1
+"make -j4 all" terminated with exit code 2. Build might be incomplete.
+
+15:05:17 Build Failed. 2 errors, 16 warnings. (took 1s.594ms)
+

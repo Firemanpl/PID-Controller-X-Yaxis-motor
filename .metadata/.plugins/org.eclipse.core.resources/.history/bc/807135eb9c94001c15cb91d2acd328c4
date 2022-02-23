@@ -1,0 +1,15 @@
+#ifndef L298N_5AD
+#define L298N_5AD
+
+typedef enum
+{
+	Forward = 0,
+	Reverse = 1,
+	Breake = 3
+}L298N_5AD_Direction;
+
+void L298N_5AD_init();
+void L298N_5AD_set_motorA(uint16_t,L298N_5AD_Direction);
+void L298N_5AD_set_motorA(L298N_5AD_Direction);
+
+#endif /* L298N_5AD */

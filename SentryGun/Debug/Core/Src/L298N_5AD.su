@@ -1,0 +1,2 @@
+L298N_5AD.c:5:6:L298N_5AD_init	8	static
+L298N_5AD.c:10:6:L298N_5AD_set_motorA	24	static

@@ -1,0 +1,16 @@
+#include "main.c"
+TIM_HandleTypeDef htim2;
+
+void L298N_5AD_init(){
+	L298N_5AD_set_motorA_direction(CCW);
+	L298N_5AD_setmotorA__speed(0);
+	HAL_TIMEx_PWMN_Start(htim2, TIM_CHANNEL_3);
+}
+void L298N_5AD_set_motorA_direction(L298N_5AD_Direction dir){
+	if(dir==CW){
+
+	}else if(dir==CCW){
+
+	}
+}
+void L298N_5AD_set_motorA_speed(uint8_t);

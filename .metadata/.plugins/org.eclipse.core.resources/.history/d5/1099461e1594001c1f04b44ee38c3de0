@@ -1,0 +1,7 @@
+
+
+typedef enum
+{
+	CW = 0,
+	CCW = 1
+}L298N_5AD_Direction;

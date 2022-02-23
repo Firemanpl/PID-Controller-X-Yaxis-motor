@@ -1,0 +1,19 @@
+#define MOTOR_A_Kp					4.5
+#define MOTOR_A_Ki					0.8
+#define MOTOR_A_Kd					0.5
+#define MOTOR_A_ANTI_WINDUP			        1000
+
+typedef struct
+{
+	TIM_HandleTypeDef *timer;	//timer obsługujący enkoder silnika
+
+	uint16_t resolution;		//rozdzielczość silnika
+
+	int pulse_count;		//zliczone impulsy
+	int measured_speed;		//obliczona prędkość silnika
+	int set_speed;			//zadana prędkość silnika
+
+	int actual_PWM;			//wartość PWM
+
+	pid_str pid_controller;
+}motor_str;
