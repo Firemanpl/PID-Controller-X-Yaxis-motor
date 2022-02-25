@@ -1,0 +1,10 @@
+09:35:09 **** Incremental Build of configuration Debug for project Obsluga enkodera ****
+make -j4 all 
+arm-none-eabi-size   Obsluga\ enkodera.elf 
+   text	   data	    bss	    dec	    hex	filename
+  19052	     20	   1972	  21044	   5234	Obsluga enkodera.elf
+Finished building: default.size.stdout
+ 
+
+09:35:09 Build Finished. 0 errors, 0 warnings. (took 308ms)
+

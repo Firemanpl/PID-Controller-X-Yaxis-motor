@@ -26,6 +26,7 @@
 /* USER CODE BEGIN Includes */
 #include<stdio.h>
 #include<string.h>
+#include "L298N_5AD.h"
 //#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
@@ -46,11 +47,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+TIM_HandleTypeDef htim1;
 uint8_t ReceivedData[40]; // Tablica przechowujaca odebrane dane
 uint8_t ReceivedDataFlag = 0; // Flaga informujaca o odebraniu danych
 uint32_t message[10];
-int Xaxis, Yaxis;
+double Xaxis, Yaxis, PIDOut;
 char *endXarg;
 int FireFlag;
 /* USER CODE END PV */
@@ -63,7 +64,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+motor_str motorA;
 /* USER CODE END 0 */
 
 /**
@@ -100,32 +101,30 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_TIM5_Init();
-  MX_TIM9_Init();
-  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
+	L298N_5AD_init();
+	motor_str_init(&motorA, &htim1);
+	pid_init(&(motorA.pid_controller), MOTOR_A_Kp, MOTOR_A_Ki, MOTOR_A_Kd,
+			MOTOR_A_ANTI_WINDUP);
+	HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+	HAL_TIM_Base_Start_IT(&htim3);
+	int speed_table[] = { 50, 100, -100, 10 };
+	int i = 0;
+	uint32_t time_tick = HAL_GetTick();
+	uint32_t max_time = 5000;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
-		if (ReceivedDataFlag == 1) {
-			ReceivedDataFlag = 0;
-			if (ReceivedData[0]=='X'&& strstr(ReceivedData,"Y")) {
-				Xaxis = strtol(ReceivedData + 1, &endXarg, 10);
-				Yaxis = strtol(endXarg+1, NULL, 10);
-				sprintf(message, "OK X=%d Y=%d", Xaxis,
-						Yaxis);
-			} else if (ReceivedData[0] == 'C') {
-				//calibrate motor
-				sprintf(message, "Calibration in progress...");
-			} else if (ReceivedData[0] == 'F') {
-				FireFlag++;
-				sprintf(message, "OK");
-			} else {
-				sprintf(message, "BAD_SYNTAX!");
-			}
-			//sprintf(message,"%s",RecivedData);
-			CDC_Transmit_FS(message, strlen(message));
+		receive_usb_message();
+		if ((HAL_GetTick() - time_tick) > max_time) {
+			time_tick = HAL_GetTick();
+
+			motor_set_speed(&motorA, speed_table[i++]);
+
+			if (i >= 4)
+				i = 0;
 		}
 
     /* USER CODE END WHILE */
@@ -179,7 +178,26 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void receive_usb_message() {
+	if (ReceivedDataFlag == 1) {
+		ReceivedDataFlag = 0;
+		if (ReceivedData[0] == 'X' && strstr(ReceivedData, "Y")) {
+			Xaxis = strtol(ReceivedData + 1, &endXarg, 10);
+			Yaxis = strtol(endXarg + 1, NULL, 10);
+			sprintf(message, "OK X=%d Y=%d", Xaxis, Yaxis);
+		} else if (ReceivedData[0] == 'C') {
+			//calibrate motor
+			sprintf(message, "Calibration in progress...");
+		} else if (ReceivedData[0] == 'F') {
+			FireFlag++;
+			sprintf(message, "OK");
+		} else {
+			sprintf(message, "BAD_SYNTAX!");
+		}
+		//sprintf(message,"%s",RecivedData);
+		CDC_Transmit_FS(message, strlen(message));
+	}
+}
 /* USER CODE END 4 */
 
 /**
