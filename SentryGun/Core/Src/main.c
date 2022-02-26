@@ -26,8 +26,8 @@
 /* USER CODE BEGIN Includes */
 #include<stdio.h>
 #include<string.h>
-#include "L298N_5AD.h"
-//#include "usbd_cdc_if.h"
+//#include "L298N_5AD.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,11 +47,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-TIM_HandleTypeDef htim1;
+//TIM_HandleTypeDef htim1;
 uint8_t ReceivedData[40]; // Tablica przechowujaca odebrane dane
 uint8_t ReceivedDataFlag = 0; // Flaga informujaca o odebraniu danych
 uint32_t message[10];
-double Xaxis, Yaxis, PIDOut;
+uint32_t Xaxis, Yaxis;
 char *endXarg;
 int FireFlag;
 /* USER CODE END PV */
@@ -96,37 +96,23 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USB_DEVICE_Init();
-  MX_TIM3_Init();
-  MX_TIM4_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
-  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-	L298N_5AD_init();
 	motor_str_init(&motorA, &htim1);
-	pid_init(&(motorA.pid_controller), MOTOR_A_Kp, MOTOR_A_Ki, MOTOR_A_Kd,
-			MOTOR_A_ANTI_WINDUP);
+
 	HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
-	HAL_TIM_Base_Start_IT(&htim3);
-	int speed_table[] = { 50, 100, -100, 10 };
-	int i = 0;
-	uint32_t time_tick = HAL_GetTick();
-	uint32_t max_time = 5000;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
 		receive_usb_message();
-		if ((HAL_GetTick() - time_tick) > max_time) {
-			time_tick = HAL_GetTick();
-
-			motor_set_speed(&motorA, speed_table[i++]);
-
-			if (i >= 4)
-				i = 0;
-		}
-
+		motor_update_count(&motorA);
+		sprintf(message,"EC: %d\n\r",motorA.pulse_count);
+		CDC_Transmit_FS(message, strlen(message));
+		HAL_Delay(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -194,7 +180,6 @@ void receive_usb_message() {
 		} else {
 			sprintf(message, "BAD_SYNTAX!");
 		}
-		//sprintf(message,"%s",RecivedData);
 		CDC_Transmit_FS(message, strlen(message));
 	}
 }

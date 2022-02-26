@@ -8,24 +8,21 @@
 
 TIM_HandleTypeDef htim2;
 
-void L298N_5AD_set_motorA(uint16_t speed, L298N_5AD_Direction dir){
-	if(speed >= htim2.Instance->ARR && dir==Direct){
-		speed = htim2.Instance->ARR;
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, speed);
+void L298N_5AD_set_motorA(motor_str *m){
+	if(m->set_target>=0){
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, m->actual_PWM);
 		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, 0);
-	}else if(speed >= htim2.Instance->ARR && dir==Reverse){
-		speed = htim2.Instance->ARR;
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, speed);
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, 0);
+	}else if(m->set_target<=0){
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, m->actual_PWM);
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 0);
 	}
 
 void L298N_5AD_set_motorA_Breake(){
-		speed = htim2.Instance->ARR;
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_ALL, speed);
+		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_ALL, 999);
 	}
 }
 void L298N_5AD_init(){
-	L298N_5AD_setmotorA(0, Direct);
+
 	HAL_TIMEx_PWMN_Start(&htim2, TIM_CHANNEL_ALL);
 }
 

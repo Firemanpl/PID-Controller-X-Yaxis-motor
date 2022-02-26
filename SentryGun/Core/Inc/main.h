@@ -31,9 +31,9 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "pid_controller.h"
-#include "motor.h"
 #include "L298N_5AD.h"
+#include "motor.h"
+#include "pid_controller.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -59,10 +59,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define M2PWM_Direct_Pin GPIO_PIN_0
-#define M2PWM_Direct_GPIO_Port GPIOA
-#define M2PWM_Reverse_Pin GPIO_PIN_1
-#define M2PWM_Reverse_GPIO_Port GPIOA
 #define M1PWM_Direct_Pin GPIO_PIN_5
 #define M1PWM_Direct_GPIO_Port GPIOA
 #define M1E_OUT_A_Pin GPIO_PIN_8
@@ -71,10 +67,6 @@ void Error_Handler(void);
 #define M1E_OUT_B_GPIO_Port GPIOA
 #define M1PWM_Reverse_Pin GPIO_PIN_3
 #define M1PWM_Reverse_GPIO_Port GPIOB
-#define M2E_OUT_A_Pin GPIO_PIN_6
-#define M2E_OUT_A_GPIO_Port GPIOB
-#define M2E_OUT_B_Pin GPIO_PIN_7
-#define M2E_OUT_B_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
