@@ -6,41 +6,42 @@
  */
 
 #include "main.h"
-void pid_init(pid_str *pid_data, float kp_init, float ki_init, float kd_init, int anti_windup_limit_init)
-{
-	pid_data->previous_error = 0;
-	pid_data->total_error = 0;
-
-	pid_data->Kp = kp_init;
-	pid_data->Ki = ki_init;
-	pid_data->Kd = kd_init;
-
-	pid_data->anti_windup_limit = anti_windup_limit_init;
+#include <math.h>
+void PID_Init(motor_str *m, float kp_init, float ki_init, float kd_init,
+		int min, int max) {
+	m->kp = kp_init;
+	m->ki = ki_init;
+	m->kd = kd_init;
+	m->min = min;
+	m->max = max;
+	m->motorDirection = Direct;
 }
 
-void pid_reset(pid_str *pid_data)
-{
-	pid_data->total_error = 0;
-	pid_data->previous_error = 0;
+void PID_calculate(motor_str *m) {
+	float previousTime;
+	float previousError;  //for calculating the derivative (edot)
+	float errorIntegral; //integral error
+	float deltaTime;  //time difference
+	float errorValue;  //error
+	float edot; //derivative (de/dt)
+	float currentTime = HAL_GetTick();
+	deltaTime = (currentTime - previousTime) / 10e6;
+	previousTime = currentTime;
+	errorValue = (float) m->pulse_count - (float) m->set_target;
+	edot = (errorValue - previousError) / deltaTime;
+	errorIntegral = errorIntegral + errorValue + deltaTime;
+	float controlSignal = (m->kp * errorValue) + (m->kd * edot)
+			+ (m->ki * errorIntegral);
+
+	if ((int)controlSignal < 0) //negative value: CCW
+		m->motorDirection = -1;
+	else if ((int)controlSignal > 0) //positive: CW
+		m->motorDirection = 1;
+	m->actual_PWM = (int) fabs(controlSignal);
+	if (m->actual_PWM > m->max)
+		m->actual_PWM = m->max;
+	else if (m->actual_PWM < m->min && errorValue != 0)
+		m->actual_PWM = m->min;
+
+	previousError = errorValue;
 }
-
-int pid_calculate(pid_str *pid_data, int setpoint, int process_variable)
-{
-	int error;
-	float p_term, i_term, d_term;
-
-	error = setpoint - process_variable;													//obliczenie uchybu
-	pid_data->total_error += error;															//sumowanie uchybu
-
-	p_term = (float)(pid_data->Kp * error);													//odpowiedź członu proporcjonalnego
-	i_term = (float)(pid_data->Ki * pid_data->total_error);									//odpowiedź członu całkującego
-	d_term = (float)(pid_data->Kd * (error - pid_data->previous_error));		//odpowiedź członu różniczkującego
-
-	if(i_term >= pid_data->anti_windup_limit) i_term = pid_data->anti_windup_limit;			//Anti-Windup - ograniczenie odpowiedzi członu całkującego
-	else if(i_term <= -pid_data->anti_windup_limit) i_term = -pid_data->anti_windup_limit;
-
-	pid_data->previous_error = error;											//aktualizacja zmiennej z poprzednią wartością błędu
-
-	return (int)(p_term + i_term + d_term);														//odpowiedź regulatora
-}
-

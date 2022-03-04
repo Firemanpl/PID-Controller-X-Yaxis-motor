@@ -1,3 +1,2 @@
-motor.c:11:6:motor_str_init	16	static
-motor.c:19:6:set_target	16	static
-motor.c:23:6:motor_update_count	32	static
+motor.c:9:6:motor_update_count	32	static
+motor.c:20:6:calibrate_motor	64	static

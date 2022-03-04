@@ -6,24 +6,23 @@
  */
 #include "main.h"
 
-TIM_HandleTypeDef htim2;
 
-void L298N_5AD_set_motorA(motor_str *m){
-	if(m->set_target>=0){
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, m->actual_PWM);
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, 0);
-	}else if(m->set_target<=0){
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_2, m->actual_PWM);
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 0);
+void L298N_5AD_set_motor(motor_str *m,TIM_HandleTypeDef *tim){
+	if(m->motorDirection == Direct){
+		__HAL_TIM_SetCompare(tim, TIM_CHANNEL_1, m->actual_PWM);
+		__HAL_TIM_SetCompare(tim, TIM_CHANNEL_2, 0);
+	}else if(m->motorDirection == Reverse){
+		__HAL_TIM_SetCompare(tim, TIM_CHANNEL_2, m->actual_PWM);
+		__HAL_TIM_SetCompare(tim, TIM_CHANNEL_1, 0);
 	}
 
-void L298N_5AD_set_motorA_Breake(){
-		__HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_ALL, 999);
+void L298N_5AD_set_motor_Breake(motor_str *m,TIM_HandleTypeDef *tim){
+		__HAL_TIM_SetCompare(tim, TIM_CHANNEL_ALL, 999);
 	}
 }
-void L298N_5AD_init(){
+void L298N_5AD_init(TIM_HandleTypeDef *tim){
 
-	HAL_TIMEx_PWMN_Start(&htim2, TIM_CHANNEL_ALL);
+	HAL_TIMEx_PWMN_Start(tim, TIM_CHANNEL_ALL);
 }
 
 

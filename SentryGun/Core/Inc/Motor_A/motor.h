@@ -7,22 +7,24 @@
 #ifndef INC_MOTOR_H_
 #define INC_MOTOR_H_
 
-//#include "pid_controller.h"
-
-#define MOTOR_A_Kp					1.2
-#define MOTOR_A_Ki					0.1
-#define MOTOR_A_Kd					0.2
-#define MOTOR_A_ANTI_WINDUP			1000
-
 typedef struct
 {
-	TIM_HandleTypeDef *timer;	//timer obsługujący enkoder silnika
-	long long int pulse_count;		//zliczone impulsy
-	int measured_speed;		//obliczona prędkość silnika
-	int set_target;			//zadana prędkość silnika
-	int actual_PWM;			//wartość PWM
+	long long int pulse_count;
+	long long int set_target;
+	int actual_PWM;
+	float kp;
+	float kd;
+	float ki;
+	int min;
+	int max;
+	int8_t motorDirection;
 }motor_str;
 
-//void motor_update_count(motor_str);
+enum Direction{
+	Direct=1,
+	Reverse=-1
+};
+
+void motor_update_count(motor_str *,TIM_HandleTypeDef *);
 
 #endif /* INC_MOTOR_H_ */
